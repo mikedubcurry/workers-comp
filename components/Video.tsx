@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useRef, useState } from "react"
 
-export function Video() {
+export function Video({process}: {process: (data: any) => void}) {
     const [currentlyRecording, setRecording] = useState(false);
-    const [recordedData, setData] = useState(null);
+    const [recordedData, setData] = useState<string|null>(null);
     const ref = useRef<HTMLVideoElement>(null);
     const recorderRef = useRef<MediaRecorder>(null);
 
@@ -31,8 +31,8 @@ export function Video() {
         if(!currentlyRecording) {
             setRecording(true);
             if(recorderRef.current) {
-                const data = [];
-                recorderRef.current.ondataavailable = ev => {
+                const data: Blob[] = [];
+                recorderRef.current.ondataavailable = (ev: BlobEvent) => {
                     data.push(ev.data);
                 }
 
@@ -47,6 +47,7 @@ export function Video() {
                 done.then(() => {
                     const blob = new Blob(data, { type: 'video/mp4' });
                     setData(URL.createObjectURL(blob));
+                    process(blob)
                 })
 
                 recorderRef.current.start();
@@ -58,6 +59,12 @@ export function Video() {
             }
         }
     }
+    
+//   useEffect(() => {
+//           if(recordedData) {
+//           process(recordedData);
+//           }
+//           }, [recordedData])
 
     return (
     <>
