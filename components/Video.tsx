@@ -9,6 +9,7 @@ export function Video({process}: {process: (data: any) => void}) {
     useEffect(() => {
         let stm: MediaStream;
         navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}, audio: true}).then(stream => {
+            console.log(stream)
             if(ref.current) {
                 stm = stream;
                 ref.current.srcObject = stream.clone();
@@ -47,7 +48,8 @@ export function Video({process}: {process: (data: any) => void}) {
                 done.then(() => {
                     const blob = new Blob(data, { type: 'video/mp4' });
                     setData(URL.createObjectURL(blob));
-                    process(blob)
+                    
+                    process(URL.createObjectURL(blob))
                 })
 
                 recorderRef.current.start();
@@ -59,12 +61,6 @@ export function Video({process}: {process: (data: any) => void}) {
             }
         }
     }
-    
-//   useEffect(() => {
-//           if(recordedData) {
-//           process(recordedData);
-//           }
-//           }, [recordedData])
 
     return (
     <>

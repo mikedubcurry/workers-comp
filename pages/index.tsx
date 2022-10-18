@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   const workerRef = useRef<Worker>(null);
   useEffect(() => {
     // @ts-ignore
-    workerRef.current = new Worker(new URL('../compressor.ts', import.meta.url));
+    workerRef.current = new Worker(new URL('../compressor.ts', import.meta.url), {type: 'module'});
     workerRef.current.onmessage = (ev: MessageEvent<any>) => {
       console.log(`Worker Compressor.ts: ${ev.data}`)
     }
